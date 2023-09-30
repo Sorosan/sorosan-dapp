@@ -1,9 +1,8 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast";
 import { useSorosanSDK } from "@sorosan-sdk/react";
 import { useEffect, useState } from "react";
+import { getPublicKey } from "@stellar/freighter-api";
 
 export interface ConnectWalletProps
     extends React.HTMLAttributes<HTMLDivElement> {
@@ -25,16 +24,16 @@ export const ConnectWallet = ({ }: ConnectWalletProps) => {
 
     const handleConnect = async () => {
         try {
-            const logged = await sdk.login();
-            const connected = await sdk.connectWallet();
-            if (!connected) {
+            // const connected = await sdk.connectWallet();
+            const publicKey = await getPublicKey();
+            if (!publicKey) {
                 toast({
                     title: "Not Connected",
                     description: "Please try again and make sure you have Freighter installed"
                 });
             }
 
-            const address = await sdk.publicKey;
+            const address = await sdk.publicKey || publicKey;
             console.log(address);
             setAddress(address);
         } catch (error) {

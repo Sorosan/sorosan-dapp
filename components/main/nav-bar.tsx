@@ -1,15 +1,13 @@
 "use client"
 
 import Link from "next/link";
-import { Button } from "../ui/button";
-import { InlineIcon } from "@iconify/react/dist/iconify.js";
+import { InlineIcon } from "@iconify/react";
 import {
     Sheet,
     SheetContent,
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { ToggleTheme } from "../ui/toggle-theme";
-import Image from "next/image";
 import { ConnectWallet } from "./shared/connect-wallet";
 
 interface NavItem {
