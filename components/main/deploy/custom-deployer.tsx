@@ -66,6 +66,9 @@ export const CustomDeployer = ({
         }
 
         setInfo([]);
+        title = "Deploying Wasm";
+        description = "Deploying wasm to the network";
+        toast({ title, description });
         const wasmId = await sdk.contract.deployWasm(wasm, sdk.publicKey);
         if (!wasmId) {
             title = "Wasm Deploy Failed";
