@@ -23,6 +23,7 @@ export const ConnectWallet = ({ }: ConnectWalletProps) => {
 
     const handleConnect = async () => {
         try {
+            const logged = await sdk.login();
             const connected = await sdk.connectWallet();
             if (!connected) {
                 toast({
