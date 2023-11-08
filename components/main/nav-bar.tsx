@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/sheet"
 import { ToggleTheme } from "../ui/toggle-theme";
 import { ConnectWallet } from "./shared/connect-wallet";
+import { NetworkDropdown } from "./shared/network-dropdown";
 
 interface NavItem {
     title: string;
@@ -56,6 +57,7 @@ export const NavBar = ({ }: NavBarProps) => {
                 <div className="flex items-center justify-center gap-x-2">
                     <ToggleTheme />
                     <ConnectWallet />
+                    <NetworkDropdown />
                 </div>
             </div>
             <div className="w-3/12 h-10block md:hidden">

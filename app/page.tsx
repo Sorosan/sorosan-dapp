@@ -1,5 +1,6 @@
 "use client"
 
+import { BuildFeature } from '@/components/main/index/build-feature'
 import { MainFeatures } from '@/components/main/index/main-features'
 import RoadMap from '@/components/main/index/road-map'
 import { TitleChanger } from '@/components/main/shared/title-changer'
@@ -16,6 +17,7 @@ export default function Home() {
 
       <div className="container">
         <MainFeatures />
+        <BuildFeature className="my-16 mb-32" />
         <RoadMap className="mx-16" />
       </div>
     </main>

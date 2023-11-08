@@ -7,12 +7,12 @@ import { PageHeader, PageHeaderItem } from "@/components/main/shared/page-header
 import { useEffect, useState } from "react";
 
 const item: PageHeaderItem = {
-    name: "Non Fungible Token",
-    source: "https://github.com/Sorosan/soroban-erc721",
-    publisher: "Sorosan",
-    description: "Simple NFT contract that implements the ERC721 interface.",
+    name: "Ballot",
+    source: "https://github.com/icolomina/ballot-contract",
+    publisher: "icolomina",
+    description: "Cast, Delegating and count votes on chai. (Modified for Preview 11)",
 }
-export default function NFTPage() {
+export default function BallotPage() {
     const [numberOfTransactions, setNumberOfTransactions] = useState<number>(0);
     const [info, setInfo] = useState<DeploymentInfoItem[]>([]);
 
@@ -35,6 +35,7 @@ export default function NFTPage() {
         <div className="container mx-auto">
             <PageHeader item={item} />
 
+            {/*
             <div className="grid grid-cols-12 gap-4">
                 <div className="col-span-12 md:col-span-6">
                     <NFTForm
@@ -53,6 +54,7 @@ export default function NFTPage() {
                             symbol={tokenSymbol} />} />
                 </div>
             </div>
+            */}
         </div>
     );
 }

@@ -93,7 +93,7 @@ const roadMapItems: RoadMapItem[] = [
         }, {
             icon: "circle-dollar-sign",
             title: "Funding and Support",
-            info: "Securing funding and support for the project's ongoing development."
+            link: "https://communityfund.stellar.org/projects"
         }],
     }
 ]

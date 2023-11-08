@@ -6,6 +6,8 @@ export const SOROSAN_SAMPLE_URL = "https://github.com/Sorosan/create-sorosan-app
 export const SOROSAN_GITHUB_URL = "https://github.com/Sorosan"
 export const SOROSAN_DEVPOST = "https://devpost.com/software/sorosan"
 
-export const TOKEN_WASM_ID = "706ac9480880242cd030a5efeb060d86f51627fb8488f5e78660a7f175b85fe1" 
-export const TIMELOCK_WASM_ID = "3b39fed35526e1d4a00ad4c690c7280bd03ab35e1876d8d6624ea067ea9ce7ab" 
-export const NFT_WASM_ID = "66b2d3d29466cf31d98c7d494f4a41c7e08e5996523df335447d4846234cbe90"
+export const TOKEN_WASM_ID = "2b22e75ad3bba47451fdde18b4ae9af3a5ba8cbfa22411c71d1da330692e2efa" 
+export const TIMELOCK_WASM_ID = "834d4f1062add183604aaccc8d9439c373e6e33571427c8e6f5a7487462f19be" 
+export const NFT_WASM_ID = "71ab88ca1a06ad8062b823394db3c15b8181b49c961f0da23ee25e0cad9b1398"
+export const DEPLOYER_WASM_ID = "b2987033f2835fdf2d26517fe6b9beb9bd54b4c4e564a53a61ca7d38bf70c283"
+export const BALLOT_WASM_ID = "601d616c32be48f7e293a070a69d2a62fd39bf6578320ca95517b1630be088ec"

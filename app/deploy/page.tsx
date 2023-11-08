@@ -22,6 +22,18 @@ const items: ActionCardItem[] = [
         description: "Create a collection of Unique NFTs"
     },
     {
+        icon: "lucide:vote",
+        title: "DAO Ballot (UPCOMING)",
+        href: "/deploy/ballot",
+        description: "Cast, Delegating and count votes on chain"
+    },
+    {
+        icon: "ion:rocket-outline",
+        title: "Deployer (UPCOMING)",
+        href: "/deploy/deployer",
+        description: "Deploy a contract factory for your project"
+    },
+    {
         icon: "ph:scroll-bold",
         title: "Custom",
         href: "/deploy/custom",

@@ -6,7 +6,6 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-// Need to import hexToByte
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState } from "react";
@@ -33,15 +32,16 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
 
     useEffect(() => {
         let methodData: any = {};
+        console.log(abi);
         abi.forEach((method: any) => {
             const hasReturn = method.outputs?.length > 0;
 
             hasReturn && setCallMethod((old: string[]) => [...old, method.name]);
 
             methodData[method.name] = {};
-            method.params.forEach((param: any) => {
+            method.inputs.forEach((param: { doc: string, value: number, type: string, name: string }) => {
                 methodData[method.name][param.name] = {
-                    type: param.type,
+                    type: scSpecTypeToScVal(param.type),
                     value: "",
                 }
             })
@@ -86,16 +86,15 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
 
     }
 
-
     const executeCallMethod = async (method: string) => {
-        const params: xdr.ScVal[] = Object.keys(methodData[method] || []).map(key =>
-            sdk.nativeToScVal(methodData[method][key].value, methodData[method][key].type.toLowerCase())
-        );
+        const params: xdr.ScVal[] = Object.keys(methodData[method] || []).map(key => {
+            return sdk.nativeToScVal(methodData[method][key].value, methodData[method][key].type.toLowerCase())
+        });
 
         let title = "Transaction successful";
         let description = "Transaction signed and sent to the network.";
-        console.log("calling method", method, params);
         if (callMethod.includes(method)) {
+            console.log("calling", contractAddress, method, params);
             const value: any = await sdk.call(contractAddress, method, params);
 
             if (value === null || value === undefined) {
@@ -109,6 +108,7 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
                 [method]: value,
             });
         } else {
+            console.log("sending", contractAddress, method, params);
             const success = await sdk.send(contractAddress, method, params);
 
             if (!success) {
@@ -138,13 +138,18 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
 
     const getInputType = (type: string) => {
         switch (type) {
-            case "address":
-                return "text";
-            case "i128":
-            case "u32":
+            case xdr.ScSpecType.scSpecTypeI128().name:
+            case xdr.ScSpecType.scSpecTypeI256().name:
+            case xdr.ScSpecType.scSpecTypeI32().name:
+            case xdr.ScSpecType.scSpecTypeI64().name:
+            case xdr.ScSpecType.scSpecTypeU128().name:
+            case xdr.ScSpecType.scSpecTypeU256().name:
+            case xdr.ScSpecType.scSpecTypeU32().name:
+            case xdr.ScSpecType.scSpecTypeU64().name:
                 return "number";
-            case "bool":
+            case xdr.ScSpecType.scSpecTypeBool().name:
                 return "checkbox";
+            case xdr.ScSpecType.scSpecTypeAddress().name:
             default:
                 return "text";
         }
@@ -164,34 +169,38 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
                 if (Array.isArray(data))
                     return data.map((item: any) => handleCallData(item)).join(", ");
                 else
-                    return JSON.stringify(data);
+                    return JSON.stringify(data, (key, value) =>
+                        typeof value === 'bigint'
+                            ? value.toString()
+                            : value // return everything else unchanged
+                    );
             default:
                 return data.toString();
         }
     }
     const scValTypes: string[] = [
-        "scvBool",
-        "scvU32",
-        "scvI32",
-        "scvU64",
-        "scvI64",
-        "scvTimepoint",
-        "scvDuration",
-        "scvU128",
-        "scvI128",
-        "scvU256",
-        "scvI256",
-        "scvBytes",
-        "scvString",
-        "scvSymbol",
-        "scvVec",
-        "scvMap",
-        "scvAddress",
-        "scvContractInstance",
-        // "scvVoid",
-        // "scvError",
-        // "scvLedgerKeyContractInstance",
-        // "scvLedgerKeyNonce"
+        xdr.ScValType.scvBool().name,
+        xdr.ScValType.scvString().name,
+        xdr.ScValType.scvAddress().name,
+        xdr.ScValType.scvU32().name,
+        xdr.ScValType.scvI32().name,
+        xdr.ScValType.scvU64().name,
+        xdr.ScValType.scvI64().name,
+        xdr.ScValType.scvTimepoint().name,
+        xdr.ScValType.scvDuration().name,
+        xdr.ScValType.scvU128().name,
+        xdr.ScValType.scvI128().name,
+        xdr.ScValType.scvU256().name,
+        xdr.ScValType.scvI256().name,
+        xdr.ScValType.scvBytes().name,
+        xdr.ScValType.scvSymbol().name,
+        xdr.ScValType.scvVec().name,
+        xdr.ScValType.scvMap().name,
+        xdr.ScValType.scvContractInstance().name,
+        // xdr.ScValType.scvVoid().name,
+        // xdr.ScValType.scvError().name,
+        // xdr.ScValType.scvLedgerKeyContractInstance().name,
+        // xdr.ScValType.scvLedgerKeyNonce().name,
     ];
 
     /**
@@ -202,17 +211,18 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
      * @param {string} newType - The new type for the parameter.
      */
     const changeContractType = (name: string, param: string, newType: string) => {
+        console.log(name, param, newType)
         // Create a copy of the ABI array to avoid mutating the original ABI.
         const abiCopy = [...abi];
 
         // Find the index of the method with the specified name in the ABI.
         const methodIndex = abiCopy.findIndex(x => x.name === name);
         if (methodIndex < 0) return;
-        const paramIndex = abiCopy[methodIndex].params.findIndex((x: any) => x.name === param);
+        const paramIndex = abiCopy[methodIndex].inputs.findIndex((x: any) => x.name === param);
         if (paramIndex < 0) return;
 
         // Update the type of the parameter in the ABI.
-        abiCopy[methodIndex].params[paramIndex].type = newType;
+        abiCopy[methodIndex].inputs[paramIndex].type = newType;
 
         // Create a copy of the methodData and update
         const methodDataCopy = { ...methodData };
@@ -224,10 +234,57 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
     };
 
     const calculateFunctionName = (method: any): string => {
-        const args = method.params || [];
+        const args = method.inputs || [];
         const argNames = args.map((arg: any) => arg.name);
         return `${method.name}(${argNames.join(", ")})`;
     }
+
+    const scSpecTypeToScVal = (type: string): string => {
+        switch (type) {
+            case xdr.ScSpecType.scSpecTypeAddress().name:
+                return xdr.ScValType.scvAddress().name;
+            case xdr.ScSpecType.scSpecTypeBool().name:
+                return xdr.ScValType.scvBool().name;
+            case xdr.ScSpecType.scSpecTypeBytes().name:
+                return xdr.ScValType.scvBytes().name;
+            case xdr.ScSpecType.scSpecTypeBytesN().name:
+                return xdr.ScValType.scvBytes().name;
+            case xdr.ScSpecType.scSpecTypeDuration().name:
+                return xdr.ScValType.scvDuration().name;
+            case xdr.ScSpecType.scSpecTypeI128().name:
+                return xdr.ScValType.scvI128().name;
+            case xdr.ScSpecType.scSpecTypeI256().name:
+                return xdr.ScValType.scvI256().name;
+            case xdr.ScSpecType.scSpecTypeI32().name:
+                return xdr.ScValType.scvI32().name;
+            case xdr.ScSpecType.scSpecTypeI64().name:
+                return xdr.ScValType.scvI64().name;
+            case xdr.ScSpecType.scSpecTypeMap().name:
+                return xdr.ScValType.scvMap().name;
+            case xdr.ScSpecType.scSpecTypeString().name:
+                return xdr.ScValType.scvString().name;
+            case xdr.ScSpecType.scSpecTypeSymbol().name:
+                return xdr.ScValType.scvSymbol().name;
+            case xdr.ScSpecType.scSpecTypeTimepoint().name:
+                return xdr.ScValType.scvTimepoint().name;
+            case xdr.ScSpecType.scSpecTypeU128().name:
+                return xdr.ScValType.scvU128().name;
+            case xdr.ScSpecType.scSpecTypeU256().name:
+                return xdr.ScValType.scvU256().name;
+            case xdr.ScSpecType.scSpecTypeU32().name:
+                return xdr.ScValType.scvU32().name;
+            case xdr.ScSpecType.scSpecTypeU64().name:
+                return xdr.ScValType.scvU64().name;
+            case xdr.ScSpecType.scSpecTypeVec().name:
+                return xdr.ScValType.scvVec().name;
+            // case xdr.ScSpecType.scSpecTypeVoid().name:
+            //     return xdr.ScValType.scvVoid().name;
+            default:
+                return type;
+            // return xdr.ScValType.scvString().name;
+        }
+    }
+
     return (
         <Accordion type="single" collapsible>
             {methods && methods.map((method: any, index: number) => {
@@ -235,7 +292,7 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
                     <AccordionItem key={index} value={`item-${index}`}>
                         <AccordionTrigger className="gilroy font-semibold">{calculateFunctionName(method)}</AccordionTrigger>
                         <AccordionContent>
-                            {method.params.map((param: any, paramIndex: number) => {
+                            {method.inputs.map((param: any, paramIndex: number) => {
                                 return (
                                     <div key={paramIndex} className="">
                                         <h2>{param.name}</h2>
@@ -243,17 +300,17 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
                                         <div className="grid grid-cols-12 gap-4 my-2">
                                             <div className="col-span-12 lg:col-span-10">
                                                 <Input type={getInputType(param.type)}
-                                                    className="" placeholder={param.type}
+                                                    className="" placeholder={scSpecTypeToScVal(param.type)}
                                                     onChange={(e) => handleChangeMethodData(method.name,
                                                         param.name,
-                                                        param.type,
+                                                        scSpecTypeToScVal(param.type),
                                                         e.target.value)}
                                                 />
                                             </div>
                                             <div className="col-span-12 lg:col-span-2">
                                                 <Select
-                                                    defaultValue={param.type}
-                                                    onValueChange={(e) => {
+                                                    defaultValue={scSpecTypeToScVal(param.type)}
+                                                    onValueChange={(e: any) => {
                                                         changeContractType(method.name,
                                                             param.name,
                                                             e)
@@ -293,23 +350,6 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
             })}
         </Accordion>
     )
-}
-
-export const transformABI = (abi: any): any[] => {
-    const methods: any[] = abi
-    .map((spec: any) => {
-        const params = spec.params
-        return {
-            name: spec.name,
-            params: params.map((param: any) => ({
-                name: param.name,
-                type: getDataType(param.type),
-            })),
-            outputs: spec.outputs,
-        };
-    });
-
-    return methods
 }
 
 const getDataType = (value: number): string => {

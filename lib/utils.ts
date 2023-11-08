@@ -1,5 +1,5 @@
 import { type ClassValue, clsx } from "clsx"
-import { xdr } from "soroban-client";
+import { Contract, xdr } from "soroban-client";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -82,3 +82,17 @@ export const scValtypes: any[] = [
   xdr.ScValType.scvLedgerKeyNonce(),
   { value: 1006, name: "scvBytes" }
 ];
+
+export const getContractHashExpirationKey = (contractAddress: string) => {
+  let contract = new Contract(contractAddress);
+  let footprint = contract.getFootprint();
+  let keyHash = footprint[0].toXDR();
+  console.log(keyHash);
+  const expirationKey = xdr.LedgerKey.expiration(
+      new xdr.LedgerKeyExpiration({ keyHash }),
+  ).toXDR("base64");
+
+  console.log("expirationKey", expirationKey);
+  return expirationKey;
+}
+

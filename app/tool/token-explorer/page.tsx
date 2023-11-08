@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DeploymentInfoItem, DeploymentInformation } from "@/components/main/deploy/deployment-information";
 import { PageHeaderItem, PageHeader } from "@/components/main/shared/page-header";
-import { ContractInvoke, transformABI } from "@/components/main/tool/contract-invoke";
+import { ContractInvoke } from "@/components/main/tool/contract-invoke";
 import { abi as TokenABI } from "@/lib/token_abi";
 
 const item: PageHeaderItem = {
@@ -123,9 +123,11 @@ export default function TokenExplorerPage() {
             };
         }
 
-        const methods: any[] = transformABI(TokenABI);
+        const abi = await sdk.contract.getContractABI(contractAddress);
+        if (!abi) return;
+
         setKey(key + 1);
-        setABI(methods);
+        setABI(abi);
     }
 
     const downloadWasm = () => {

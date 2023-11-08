@@ -85,6 +85,7 @@ export const TokenDeployer = ({
                     method: 'POST',
                 });
                 const wasm = await response.blob();
+                console.log(wasm);
                 if (!wasm) {
                     return;
                 }

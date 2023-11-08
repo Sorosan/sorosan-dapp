@@ -1,6 +1,6 @@
 "use client"
 
-import { getContract, hexToByte, scValtypes } from "@/lib/utils";
+import { getContract, getContractHashExpirationKey, hexToByte, scValtypes } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DeploymentInfoItem, DeploymentInformation } from "@/components/main/deploy/deployment-information";
 import { PageHeaderItem, PageHeader } from "@/components/main/shared/page-header";
-import { ContractInvoke, transformABI } from "@/components/main/tool/contract-invoke";
+import { ContractInvoke } from "@/components/main/tool/contract-invoke";
 
 const item: PageHeaderItem = {
     name: "Invoke",
@@ -60,8 +60,9 @@ export default function InvokePage() {
         const contractAddress: string = await getContractAddress(input);
         setContractAddress(contractAddress);
 
-        const { wasmId, wasmIdLedger }: any = await sdk.contract.getContractData(contractAddress);
-        if (!wasmId) {
+        // { wasmId, wasmIdLedger }
+        const contractData: any = await sdk.contract.getContractData(contractAddress);
+        if (!contractData || !contractData.wasmId) {
             toast({
                 title: "Contract not found",
                 description: "Contract not found",
@@ -69,11 +70,19 @@ export default function InvokePage() {
             return;
         };
 
+        const { wasmId, wasmIdLedger } = contractData;
         setWasmId(wasmId.toString('hex'));
         handleInfo("WASM", wasmId.toString('hex'));
         handleInfo("Creation Block No.", wasmIdLedger);
 
         const contractId = await sdk.util.toContractHash(contractAddress);
+        // try {
+        //     const expirationKey = getContractHashExpirationKey(contractId);
+        //     console.log(expirationKey);
+        // } catch (e) {
+        //     console.error(e);
+        // }
+
         try {
             const onChainData = await getContract(contractId);
             onChainData.created_at && handleInfo("Created At", onChainData.created_at, false);
@@ -94,13 +103,8 @@ export default function InvokePage() {
         const abi = await sdk.contract.getContractABI(contractAddress);
         if (!abi) return;
 
-        const methods: any[] = transformABI(abi);
         setKey(key + 1);
-        setABI(methods);
-
-        // scValtypes.forEach((type: any) => {
-        //     console.log(type.name, type.value);
-        // });
+        setABI(abi);
     }
 
     const downloadWasm = () => {
