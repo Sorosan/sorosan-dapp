@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { xdr } from "soroban-client";
 import { useState } from "react";
-import { useSorosanSDK } from "@sorosan-sdk/react";
+import { useSorosanSDK } from "@sorosan-client/react";
 import { useToast } from "@/components/ui/use-toast";
 import { TIMELOCK_WASM_ID, TOKEN_WASM_ID } from "@/lib/constants";
 import { DeploymentInfoItem } from "./deployment-information";

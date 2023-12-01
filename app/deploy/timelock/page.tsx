@@ -1,6 +1,6 @@
 "use client"
 
-import { useSorosanSDK } from "@sorosan-sdk/react";
+import { useSorosanSDK } from "@sorosan-client/react";
 import { useEffect, useState } from "react";
 import { PageHeaderItem, PageHeader } from "@/components/main/shared/page-header";
 import { DeploymentInfoItem, DeploymentInformation } from "@/components/main/deploy/deployment-information";

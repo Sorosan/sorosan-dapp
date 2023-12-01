@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-import { useSorosanSDK } from "@sorosan-sdk/react";
+import { useSorosanSDK } from "@sorosan-client/react";
 import { PageHeader, PageHeaderItem } from "@/components/main/shared/page-header";
 
 const item: PageHeaderItem = {

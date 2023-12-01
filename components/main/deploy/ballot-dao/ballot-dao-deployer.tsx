@@ -2,23 +2,25 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useSorosanSDK } from "@sorosan-client/react";
 import { useToast } from "@/components/ui/use-toast";
-import { NFT_WASM_ID } from "@/lib/constants";
-import { DeploymentInfoItem } from "./deployment-information";
+import { BALLOT_WASM_ID, NFT_WASM_ID } from "@/lib/constants";
+import { DeploymentInfoItem } from "@/components/main/deploy/deployment-information";
 
-export interface NFTDeployerProps
+export interface BallotDaoDeployerProps
     extends React.HTMLAttributes<HTMLDivElement> {
     setInfo: React.Dispatch<React.SetStateAction<DeploymentInfoItem[]>>;
     deployWasm: boolean;
-    name: string;
-    symbol: string;
+    admin: string;
+    startTime: number;
+    endTime: number;
 }
 
-export const NFTDeployer = ({
+export const BallotDaoDeployer = ({
     setInfo,
     deployWasm,
-    name,
-    symbol,
-}: NFTDeployerProps) => {
+    admin,
+    startTime,
+    endTime,
+}: BallotDaoDeployerProps) => {
     const { toast } = useToast();
     const { sdk } = useSorosanSDK();
 
@@ -36,19 +38,19 @@ export const NFTDeployer = ({
 
     const deploy = async () => {
         let title = "Not Logged In";
-        let description = "Please connect wallet to deploy your token";
+        let description = "Please connect wallet to deploy ballot";
         if (!await sdk.login()) {
             toast({ title, description });
             return;
         }
 
-        let wasmId = NFT_WASM_ID;
+        let wasmId = BALLOT_WASM_ID;
         if (deployWasm) {
             title = "Deploying Wasm";
             description = "Deploying wasm to the network";
             toast({ title, description });
 
-            const response = await fetch(`/api/wasm/nft`, {
+            const response = await fetch(`/api/wasm/ballot-dao`, {
                 method: 'POST',
             });
             const wasm = await response.blob();
@@ -71,23 +73,30 @@ export const NFTDeployer = ({
         }
 
         handleInfo("WASM", wasmId);
-        title = "Deploying Token";
-        description = "Deploying token to the network";
+        title = "Deploying Ballot";
+        description = "Deploying Ballot to the network";
         toast({ title, description });
 
         const contractId = await sdk.contract.deploy(wasmId, sdk.publicKey);
         const contractAddress = await sdk.util.toContractAddress(contractId);
 
-        if (name && symbol) {
-            title = "Initialising Token";
-            description = "Deploying token to the network";
+        if (!contractAddress) {
+            title = "Deploy Failed";
+            description = "Please try again";
             toast({ title, description });
+            return;
+        }
+
+        console.log(admin, startTime, endTime);
+        if (admin && startTime && endTime) {
+            const args = [
+                sdk.nativeToScVal(admin, "address"),
+                sdk.nativeToScVal(startTime, "u64"),
+                sdk.nativeToScVal(endTime, "u64"),
+            ];
+
             const ret = await sdk.contract.initialise(contractAddress,
-                "initialize", [
-                sdk.util.addressScVal(sdk.publicKey),
-                sdk.nativeToScVal(name),
-                sdk.nativeToScVal(symbol),
-            ]);
+                "configure", args);
 
             if (!ret) {
                 title = "Deployed but Initialise Failed";
@@ -97,15 +106,8 @@ export const NFTDeployer = ({
             }
         }
 
-        if (!contractAddress) {
-            title = "Deploy Failed";
-            description = "Please try again";
-            toast({ title, description });
-            return;
-        }
-
         title = "Deployed";
-        description = "Your token has been deployed";
+        description = "Your Ballot contract has been deployed";
         handleInfo("Contract", contractAddress);
         toast({ title, description });
     }

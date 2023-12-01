@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast";
-import { useSorosanSDK } from "@sorosan-sdk/react";
+import { useSorosanSDK } from "@sorosan-client/react";
 import { useEffect, useState } from "react";
 import { getPublicKey } from "@stellar/freighter-api";
 

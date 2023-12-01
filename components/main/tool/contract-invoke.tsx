@@ -11,7 +11,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { xdr } from "soroban-client";
-import { useSorosanSDK } from "@sorosan-sdk/react";
+import { useSorosanSDK } from "@sorosan-client/react";
+import { getPublicKey } from "@stellar/freighter-api";
 import { scValtypes } from "@/lib/utils";
 
 export interface ContractInvokeProps
@@ -90,7 +91,9 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
         const params: xdr.ScVal[] = Object.keys(methodData[method] || []).map(key => {
             return sdk.nativeToScVal(methodData[method][key].value, methodData[method][key].type.toLowerCase())
         });
-
+        const publicKey  = await getPublicKey();
+        sdk.publicKey = publicKey;
+        
         let title = "Transaction successful";
         let description = "Transaction signed and sent to the network.";
         if (callMethod.includes(method)) {

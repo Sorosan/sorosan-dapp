@@ -12,7 +12,7 @@ import { ToggleTheme } from '@/components/ui/toggle-theme'
 // }
 
 import { Lato } from 'next/font/google'
-import { SorosanProvider } from '@sorosan-sdk/react'
+import { SorosanProvider } from '@sorosan-client/react'
 import { Footer } from '@/components/main/footer'
 import { NavBar } from '@/components/main/nav-bar'
 import { Toaster } from '@/components/ui/toaster'

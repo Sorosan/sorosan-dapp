@@ -23,13 +23,13 @@ const items: ActionCardItem[] = [
     },
     {
         icon: "lucide:vote",
-        title: "DAO Ballot (UPCOMING)",
+        title: "DAO Ballot",
         href: "/deploy/ballot",
         description: "Cast, Delegating and count votes on chain"
     },
     {
         icon: "ion:rocket-outline",
-        title: "Deployer (UPCOMING)",
+        title: "Deployer",
         href: "/deploy/deployer",
         description: "Deploy a contract factory for your project"
     },
@@ -38,6 +38,12 @@ const items: ActionCardItem[] = [
         title: "Custom",
         href: "/deploy/custom",
         description: "Built a Soroban smart, deploy and initialise it here"
+    },
+    {
+        icon: "ion:dice-outline",
+        title: "Dice (COMING SOON)",
+        href: "/deploy/dice",
+        description: "On chain dice, using Soroban PRNG"
     },
     {
         icon: "tabler:send",

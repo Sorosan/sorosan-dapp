@@ -20,7 +20,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "@radix-ui/react-toast": "^1.1.5",
-    "@sorosan-sdk/react": "^0.1.1",
+    "@sorosan-client/react": "^0.2.1",
     "@stellar/freighter-api": "^1.7.1",
     "@webassemblyjs/wasm-parser": "^1.11.6",
     "class-variance-authority": "^0.7.0",

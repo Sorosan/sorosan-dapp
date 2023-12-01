@@ -1,6 +1,6 @@
 export const SOROSAN_DOC_URL = "https://sorosan.github.io/sorosan-doc/"
 export const SOROSAN_SDK_URL = "https://www.npmjs.com/package/@sorosan-sdk/core"
-export const SOROSAN_SDK_REACT_URL = "https://www.npmjs.com/package/@sorosan-sdk/react"
+export const SOROSAN_SDK_REACT_URL = "https://www.npmjs.com/package/@sorosan-client/react"
 export const SOROSAN_SAMPLE_URL = "https://github.com/Sorosan/create-sorosan-app"
 
 export const SOROSAN_GITHUB_URL = "https://github.com/Sorosan"

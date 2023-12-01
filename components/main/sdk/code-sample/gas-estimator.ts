@@ -4,7 +4,7 @@ import { SorosanSDK } from '@sorosan-sdk/core';
 const sdk = new SorosanSDK();
 
 // For React (hook)
-import { useSorosanSDK } from '@sorosan-sdk/react';
+import { useSorosanSDK } from '@sorosan-client/react';
 const { sdk } = useSorosanSDK();
 
 // Main script

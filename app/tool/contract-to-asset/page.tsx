@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Asset } from "soroban-client";
-import { useSorosanSDK } from "@sorosan-sdk/react";
+import { useSorosanSDK } from "@sorosan-client/react";
 import { PageHeaderItem, PageHeader } from "@/components/main/shared/page-header";
 import { Input } from "@/components/ui/input";
 

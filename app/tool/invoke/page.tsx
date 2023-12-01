@@ -1,21 +1,12 @@
 "use client"
 
-import { getContract, getContractHashExpirationKey, hexToByte, scValtypes } from "@/lib/utils";
+import { getContract, hexToByte } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { xdr } from "soroban-client";
-import { useSorosanSDK } from "@sorosan-sdk/react";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
+import { useSorosanSDK } from "@sorosan-client/react";
 // Need to import hexToByte
 import { useToast } from "@/components/ui/use-toast";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { DeploymentInfoItem, DeploymentInformation } from "@/components/main/deploy/deployment-information";
 import { PageHeaderItem, PageHeader } from "@/components/main/shared/page-header";
 import { ContractInvoke } from "@/components/main/tool/contract-invoke";
@@ -101,6 +92,7 @@ export default function InvokePage() {
         };
 
         const abi = await sdk.contract.getContractABI(contractAddress);
+        console.log(abi)
         if (!abi) return;
 
         setKey(key + 1);

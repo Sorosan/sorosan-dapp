@@ -29,10 +29,10 @@ const items: NavItem[] = [
         title: 'SDK',
         href: '/sdk',
     },
-    {
-        title: 'Developer (Coming Soon)',
-        href: '/',
-    },
+    // {
+    //     title: 'Developer (Coming Soon)',
+    //     href: '/',
+    // },
 ]
 
 export interface NavBarProps

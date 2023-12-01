@@ -3,22 +3,18 @@ import { useState } from "react";
 import { useSorosanSDK } from "@sorosan-client/react";
 import { useToast } from "@/components/ui/use-toast";
 import { NFT_WASM_ID } from "@/lib/constants";
-import { DeploymentInfoItem } from "./deployment-information";
+import { DeploymentInfoItem } from "@/components/main/deploy/deployment-information";
 
-export interface NFTDeployerProps
+export interface DeployerDeployerProps
     extends React.HTMLAttributes<HTMLDivElement> {
     setInfo: React.Dispatch<React.SetStateAction<DeploymentInfoItem[]>>;
     deployWasm: boolean;
-    name: string;
-    symbol: string;
 }
 
-export const NFTDeployer = ({
+export const DeployerDeployer = ({
     setInfo,
     deployWasm,
-    name,
-    symbol,
-}: NFTDeployerProps) => {
+}: DeployerDeployerProps) => {
     const { toast } = useToast();
     const { sdk } = useSorosanSDK();
 
@@ -36,7 +32,7 @@ export const NFTDeployer = ({
 
     const deploy = async () => {
         let title = "Not Logged In";
-        let description = "Please connect wallet to deploy your token";
+        let description = "Please connect wallet to deploy deployer";
         if (!await sdk.login()) {
             toast({ title, description });
             return;
@@ -48,7 +44,7 @@ export const NFTDeployer = ({
             description = "Deploying wasm to the network";
             toast({ title, description });
 
-            const response = await fetch(`/api/wasm/nft`, {
+            const response = await fetch(`/api/wasm/deployer`, {
                 method: 'POST',
             });
             const wasm = await response.blob();
@@ -71,31 +67,12 @@ export const NFTDeployer = ({
         }
 
         handleInfo("WASM", wasmId);
-        title = "Deploying Token";
-        description = "Deploying token to the network";
+        title = "Deploying Deployer";
+        description = "Deploying Deployer to the network";
         toast({ title, description });
 
         const contractId = await sdk.contract.deploy(wasmId, sdk.publicKey);
         const contractAddress = await sdk.util.toContractAddress(contractId);
-
-        if (name && symbol) {
-            title = "Initialising Token";
-            description = "Deploying token to the network";
-            toast({ title, description });
-            const ret = await sdk.contract.initialise(contractAddress,
-                "initialize", [
-                sdk.util.addressScVal(sdk.publicKey),
-                sdk.nativeToScVal(name),
-                sdk.nativeToScVal(symbol),
-            ]);
-
-            if (!ret) {
-                title = "Deployed but Initialise Failed";
-                description = "Please try again";
-                toast({ title, description });
-                return;
-            }
-        }
 
         if (!contractAddress) {
             title = "Deploy Failed";
@@ -105,7 +82,7 @@ export const NFTDeployer = ({
         }
 
         title = "Deployed";
-        description = "Your token has been deployed";
+        description = "Your Deployer contract has been deployed";
         handleInfo("Contract", contractAddress);
         toast({ title, description });
     }

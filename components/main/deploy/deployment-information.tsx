@@ -1,4 +1,4 @@
-import { useSorosanSDK } from "@sorosan-sdk/react";
+import { useSorosanSDK } from "@sorosan-client/react";
 import { ClipBoard } from "../shared/clip-board";
 import { Http2ServerRequest } from "http2";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

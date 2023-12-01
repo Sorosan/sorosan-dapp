@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { useSorosanSDK } from '@sorosan-sdk/react';
+import { useSorosanSDK } from '@sorosan-client/react';
 
 interface TokenInfoProp
     extends React.HTMLAttributes<HTMLDivElement> { }
