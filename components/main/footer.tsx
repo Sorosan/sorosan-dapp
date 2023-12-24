@@ -1,10 +1,6 @@
-import { SOROSAN_DEVPOST, SOROSAN_DOC_URL, SOROSAN_GITHUB_URL } from "@/lib/constants"
+import { SOROSAN_DOC_URL, SOROSAN_GITHUB_URL } from "@/lib/constants"
 
 const items = [
-    {
-        title: "About",
-        href: SOROSAN_DEVPOST,
-    },
     {
         title: "Github",
         href: SOROSAN_GITHUB_URL,

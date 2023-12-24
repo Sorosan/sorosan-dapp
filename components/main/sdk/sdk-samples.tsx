@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { useSorosanSDK } from '@sorosan-client/react';
+import { useSorosanSDK } from '@sorosan-sdk/react';
 import { GasEstimator } from './gas-estimator';
 import { code as gasEstimatorCode } from './code-sample/gas-estimator';
 import { code as tokenInfoCode } from './code-sample/token-info';

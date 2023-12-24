@@ -1,9 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useSorosanSDK } from "@sorosan-client/react";
+import { useSorosanSDK } from "@sorosan-sdk/react";
 import { useToast } from "@/components/ui/use-toast";
-import { TOKEN_WASM_ID } from "@/lib/constants";
 import { DeploymentInfoItem } from "./deployment-information";
+import {
+    Account,
+    Address,
+    Asset,
+    Contract,
+    Memo,
+    Operation,
+    SorobanRpc,
+    TimeoutInfinite,
+    Transaction,
+    TransactionBuilder,
+    xdr,
+} from "stellar-sdk";
 
 export interface ArgItem {
     name?: string;
@@ -34,13 +46,14 @@ export const CustomDeployer = ({
         setLoading(true);
         try {
             await deploy();
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
+            toast({ title: "Error", description: error.toString() });
         }
         setLoading(false);
     }
 
-    const deploy = async () => { 
+    const deploy = async () => {
         let title = "Not Logged In";
         let description = "Please connect wallet to deploy your token";
         if (!await sdk.login()) {
@@ -49,7 +62,7 @@ export const CustomDeployer = ({
         }
 
         let args: any[] = [];
-        try{
+        try {
             args = initialiseArgs.map(arg => sdk.nativeToScVal(arg.value, arg.type));
         } catch (error) {
             console.log(error);
@@ -58,7 +71,7 @@ export const CustomDeployer = ({
             toast({ title, description });
         }
 
-        if (!wasm) {    
+        if (!wasm) {
             title = "No wasm file";
             description = "Please upload a wasm file to deploy";
             toast({ title, description });
@@ -69,7 +82,9 @@ export const CustomDeployer = ({
         title = "Deploying Wasm";
         description = "Deploying wasm to the network";
         toast({ title, description });
+        console.log(wasm, sdk.publicKey);
         const wasmId = await sdk.contract.deployWasm(wasm, sdk.publicKey);
+
         if (!wasmId) {
             title = "Wasm Deploy Failed";
             description = "Please check your wasm file is valid";
@@ -103,7 +118,7 @@ export const CustomDeployer = ({
                 initialiseMethod,
                 args);
 
-            if (!result) {
+            if (result.status !== SorobanRpc.Api.GetTransactionStatus.SUCCESS) {
                 title = "Initialise Failed";
                 description = "Please try again";
                 toast({ title, description });

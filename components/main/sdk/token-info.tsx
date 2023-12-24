@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { useSorosanSDK } from '@sorosan-client/react';
+import { useSorosanSDK } from '@sorosan-sdk/react';
 
 interface TokenInfoProp
     extends React.HTMLAttributes<HTMLDivElement> { }
@@ -10,7 +10,7 @@ interface TokenInfoProp
 export const TokenInfo = ({ className, ...props }: TokenInfoProp) => {
     const { sdk } = useSorosanSDK();
 
-    const [contract, setContract] = useState("CAZNM4AAQCQPUQGR72MIC7NPWHZBDOQKZBUQ3WTULIDALOWMOG23L6JT");
+    const [contract, setContract] = useState("CB6TIIO3NSBEXDOW6Q2HNX7P2VV3BFI5GXRVITW2NKRJISWP7YA6HXP2");
     const [tokenName, setTokenName] = useState("");
     const [tokenSymbol, setTokenSymbol] = useState("");
     const [loading, setLoading] = useState(false);

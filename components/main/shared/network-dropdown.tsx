@@ -16,7 +16,7 @@ import {
 import { networkType, useSorosanNetwork } from "@/components/main/network/network-provider";
 
 export function NetworkDropdown() {
-    const [selectedNetwork, setSelectedNetwork] = useState<string>("futurenet");
+    const [selectedNetwork, setSelectedNetwork] = useState<string>("testnet");
     const network = useSorosanNetwork();
 
     const changeSelectedNetwork = (changedNetwork: string) => {
@@ -29,7 +29,7 @@ export function NetworkDropdown() {
     }
 
     useEffect(() => {
-        const net: any = window.localStorage.getItem("sorosan-network") || "futurenet";
+        const net: any = window.localStorage.getItem("sorosan-network") || "testnet";
         changeSelectedNetwork(net);
     }, []);
 
@@ -43,7 +43,7 @@ export function NetworkDropdown() {
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup value={selectedNetwork} onValueChange={changeSelectedNetwork}>
                     <DropdownMenuRadioItem value="mainnet" disabled={true}>Mainnet (Coming in 2024)</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="futurenet">Futurenet</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="futurenet" disabled={true}>Futurenet (Depreciated)</DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="testnet">Testnet</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
             </DropdownMenuContent>

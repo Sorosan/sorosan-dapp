@@ -10,8 +10,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { xdr } from "soroban-client";
-import { useSorosanSDK } from "@sorosan-client/react";
+import { SorobanRpc, xdr } from "stellar-sdk";
+import { useSorosanSDK } from "@sorosan-sdk/react";
 import { getPublicKey } from "@stellar/freighter-api";
 import { scValtypes } from "@/lib/utils";
 
@@ -89,36 +89,52 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
 
     const executeCallMethod = async (method: string) => {
         const params: xdr.ScVal[] = Object.keys(methodData[method] || []).map(key => {
+            if (methodData[method][key].type.toLocaleLowerCase() === xdr.ScValType.scvVec().name.toLocaleLowerCase()) {
+                const items: xdr.ScVal[] = methodData[method][key].value.split(",").map((el: any) =>
+                    sdk.nativeToScVal(el));
+                return xdr.ScVal.scvVec(items);
+            }
             return sdk.nativeToScVal(methodData[method][key].value, methodData[method][key].type.toLowerCase())
         });
-        const publicKey  = await getPublicKey();
+        const publicKey = await getPublicKey();
         sdk.publicKey = publicKey;
-        
+
         let title = "Transaction successful";
         let description = "Transaction signed and sent to the network.";
-        if (callMethod.includes(method)) {
-            console.log("calling", contractAddress, method, params);
-            const value: any = await sdk.call(contractAddress, method, params);
 
-            if (value === null || value === undefined) {
-                title = "Transaction failed";
-                description = "Transaction failed";
+        try {
+            if (callMethod.includes(method)) {
+                console.log("call", contractAddress, method, params)
+                const value: any = await sdk.call(contractAddress, method, params);
+
+                if (value === null || value === undefined) {
+                    title = "Transaction failed";
+                    description = "Transaction failed";
+                }
+
+                setCallData({ ...callData, [method]: value, });
+                if (typeof value === "bigint") {
+                    setCallData({ ...callData, [method]: value.toString(), });
+                }
+            } else {
+                console.log("send", contractAddress, method, params)
+                const result = await sdk.send(contractAddress, method, params);
+
+                if (result.status !== SorobanRpc.Api.GetTransactionStatus.SUCCESS) {
+                    title = "Transaction failed";
+                    description = "Transaction failed";
+
+                } else {
+                    let r = result as SorobanRpc.Api.GetSuccessfulTransactionResponse;
+                    if (r.returnValue) {
+                        setCallData({ ...callData, [method]: r.returnValue, });
+                    }
+                }
             }
+        } catch (e) {
+            console.error(e);
+        }   
 
-            console.log("call", value)
-            setCallData({
-                ...callData,
-                [method]: value,
-            });
-        } else {
-            console.log("sending", contractAddress, method, params);
-            const success = await sdk.send(contractAddress, method, params);
-
-            if (!success) {
-                title = "Transaction failed";
-                description = "Transaction failed";
-            }
-        }
 
         toast({ title, description });
     }
@@ -163,7 +179,7 @@ export const ContractInvoke = ({ contractAddress, abi }: ContractInvokeProps) =>
             case "string":
                 return data;
             case "number":
-                return data.toString();
+                return data.toString() || "0";
             case "boolean":
                 return data.toString();
             case "bigint":

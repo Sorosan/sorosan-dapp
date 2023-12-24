@@ -38,7 +38,7 @@ export const SetUp = ({ className }: SetUpProps) => {
 
 const codeString = `
 // Root.tsx, Layout.tsx, or any component
-import { SorosanProvider } from '@sorosan-client/react'
+import { SorosanProvider } from '@sorosan-sdk/react'
 
 export default function Component() {
     const { sdk } = useSorosan();

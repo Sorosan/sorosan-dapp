@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { xdr } from "soroban-client";
+import { SorobanRpc, xdr } from "stellar-sdk";
 import { useState } from "react";
-import { useSorosanSDK } from "@sorosan-client/react";
+import { useSorosanSDK } from "@sorosan-sdk/react";
 import { useToast } from "@/components/ui/use-toast";
-import { TIMELOCK_WASM_ID, TOKEN_WASM_ID } from "@/lib/constants";
+import { TIMELOCK_WASM_ID } from "@/lib/constants";
 import { DeploymentInfoItem } from "./deployment-information";
 
 export interface TimelockDeployerProps
@@ -37,8 +37,9 @@ export const TimelockDeployer = ({
         setLoading(true);
         try {
             await deploy();
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
+            toast({ title: "Error", description: error.toString() });
         }
         setLoading(false);
     }
@@ -52,30 +53,30 @@ export const TimelockDeployer = ({
         }
 
         setInfo([]);
-        let wasmId = TIMELOCK_WASM_ID;
-        // if (deployWasm) {
-        //     title = "Deploying Wasm";
-        //     description = "Deploying wasm to the network";
-        //     toast({ title, description });
+        let wasmId = TIMELOCK_WASM_ID(sdk.selectedNetwork.network);
+        if (deployWasm) {
+            title = "Deploying Wasm";
+            description = "Deploying wasm to the network";
+            toast({ title, description });
 
-        //     const response = await fetch(`/api/wasm/timelock`, {
-        //         method: 'POST',
-        //     });
-        //     const wasm = await response.blob();
-        //     if (!wasm) {
-        //         title = "Fail to fetch wasm";
-        //         description = "Please try again or untick deploy wasm to use deployed wasm";
-        //         toast({ title, description });
-        //         return;
-        //     }
-        //     try {
-        //         wasmId = await sdk.contract.deployWasm(wasm, sdk.publicKey);
-        //         console.log(wasmId);
-        //     } catch (error) {
-        //         console.log(error);
-        //         wasmId = ""
-        //     }
-        // }
+            const response = await fetch(`/api/wasm/timelock`, {
+                method: 'POST',
+            });
+            const wasm = await response.blob();
+            if (!wasm) {
+                title = "Fail to fetch wasm";
+                description = "Please try again or untick deploy wasm to use deployed wasm";
+                toast({ title, description });
+                return;
+            }
+            try {
+                wasmId = await sdk.contract.deployWasm(wasm, sdk.publicKey);
+                console.log(wasmId);
+            } catch (error) {
+                console.log(error);
+                wasmId = ""
+            }
+        }
 
         if (!wasmId) {
             title = "Wasm Deploy Failed";
@@ -85,8 +86,8 @@ export const TimelockDeployer = ({
         }
 
         handleInfo("WASM", wasmId);
-        title = "Deploying Token";
-        description = "Deploying token to the network";
+        title = "Deploying TimeLock";
+        description = "Deploying TimeLock to the network";
         toast({ title, description });
 
         const contractId = await sdk.contract.deploy(wasmId, sdk.publicKey);
@@ -100,39 +101,41 @@ export const TimelockDeployer = ({
             return;
         }
 
-        if (sdk.util.isContractAddress(token) && amount) {
-            let params: any[] = [];
-            try {
-                const response = await sdk.server.getLatestLedger();
-                params = [
-                    sdk.util.addressScVal(sdk.publicKey),
-                    sdk.util.addressScVal(contractAddress),
-                    sdk.nativeToScVal(parseInt(amount.toString()), "i128"),
-                    // Get current expiration ledger and set based on that
-                    sdk.nativeToScVal(response.sequence + 5000, "u32")
-                ];
-            } catch (e) {
-                title = "Invalid amount";
-                description = "Please enter a valid amount.";
-                toast({ title, description });
-                return;
-            }
+        // if (sdk.util.isContractAddress(token) && amount) {
+        //     let params: any[] = [];
+        //     try {
+        //         const response = await sdk.server.getLatestLedger();
+        //         params = [
+        //             sdk.util.addressScVal(sdk.publicKey),
+        //             sdk.util.addressScVal(contractAddress),
+        //             sdk.nativeToScVal(parseInt(amount.toString()), "i128"),
+        //             // Get current expiration ledger and set based on that
+        //             sdk.nativeToScVal(response.sequence + 5000, "u32")
+        //         ];
+        //     } catch (e) {
+        //         title = "Invalid amount";
+        //         description = "Please enter a valid amount.";
+        //         toast({ title, description });
+        //         return;
+        //     }
 
-            title = "Approving Token";
-            description = "Deploying token to the network";
-            toast({ title, description });
-            const success = await sdk.send(token, "approve", params);
-            if (!success) {
-                title = "Failed to approve";
-                description = "Failed to approve";
-                toast({ title, description });
-                return;
-            }
-        }
+        //     title = "Approving Token";
+        //     description = "Deploying token to the network";
+        //     toast({ title, description });
+        //     const result = await sdk.send(token, "approve", params);
+            
+        //     if (result.status !== SorobanRpc.Api.GetTransactionStatus.SUCCESS) {
+        //         title = "Failed to approve";
+        //         description = "Failed to approve";
+        //         toast({ title, description });
+        //         return;
+        //     }
+        // }
 
         try {
             // Lazy way to check if the user has inputted the correct arguments
             const initialiseArgs = generateArgs();
+            console.log(initialiseArgs);
             const isInitialised = await sdk.contract.initialise(
                 contractAddress,
                 "deposit",
@@ -159,8 +162,7 @@ export const TimelockDeployer = ({
         const fromAddress = sdk.util.addressScVal(sdk.publicKey);
         const tokenAddress = sdk.util.addressScVal(token);
         const amountI128 = sdk.nativeToScVal(parseInt(amount.toString()), "i128");
-
-        let claimantsAddresses: any[] = [];
+        let claimantsAddresses: xdr.ScVal[] = [];
         try {
             claimants.filter(claimant => claimant).forEach((claimant) => {
                 claimantsAddresses.push(sdk.util.addressScVal(claimant));
@@ -170,7 +172,6 @@ export const TimelockDeployer = ({
             return [];
         }
         const claimantsVec = xdr.ScVal.scvVec(claimantsAddresses);
-
         // 1 - before, 0 - after
         const timeBoundInput = timeBoundKind;
         const timestampVal = timeBoundTimestamp;

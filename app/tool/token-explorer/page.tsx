@@ -1,25 +1,15 @@
 "use client"
 
-import { getContract, hexToByte, scValtypes } from "@/lib/utils";
+import { getContract, hexToByte } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { xdr } from "soroban-client";
-import { useSorosanSDK } from "@sorosan-client/react";
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
+import { useSorosanSDK } from "@sorosan-sdk/react";
 // Need to import hexToByte
 import { useToast } from "@/components/ui/use-toast";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { DeploymentInfoItem, DeploymentInformation } from "@/components/main/deploy/deployment-information";
 import { PageHeaderItem, PageHeader } from "@/components/main/shared/page-header";
 import { ContractInvoke } from "@/components/main/tool/contract-invoke";
-import { abi as TokenABI } from "@/lib/token_abi";
 
 const item: PageHeaderItem = {
     name: "Token Explorer",
@@ -86,9 +76,9 @@ export default function TokenExplorerPage() {
 
         toast({ title, description });
 
-        const wrappedAsset = await sdk.token.getAsset(contractAddress);
-        const contractId = await sdk.util.toContractHash(contractAddress);
+        const contractId = await sdk.util.toContractHash(contractAddress)
         try {
+            // const wrappedAsset = await sdk.token.getAsset(contractAddress);
             const onChainData = await getContract(contractId);
             onChainData.created_at && handleInfo("Created At", onChainData.created_at, false);
             onChainData.transactions_count && handleInfo("Total Transaction Count", onChainData.transactions_count.toString(), false);
@@ -98,31 +88,54 @@ export default function TokenExplorerPage() {
             console.error(e);
         }
 
-        if (wrappedAsset) {
-            handleTokenInfo("Asset", `${wrappedAsset.getCode()}-${wrappedAsset.getIssuer()}`);
-        } else {
-            // Handle the contract data since if not wrapped
-            handleTokenInfo("Asset", "Contract not Wrapped", false);
+        // if (false /* wrappedAsset */) {
+        //     // handleTokenInfo("Asset", `${wrappedAsset.getCode()}-${wrappedAsset.getIssuer()}`);
+        // } else {
+        //     // Handle the contract data since if not wrapped
+        //     handleTokenInfo("Asset", "Contract not Wrapped", false);
+        //     const { wasmId, wasmIdLedger }: any = await sdk.contract.getContractData(contractAddress);
+        //     if (!wasmId) {
+        //         title = "Contract not found"
+        //         description = "Contract not found"
+        //         toast({ title, description });
+        //         return;
+        //     };
+
+        //     setWasmId(wasmId.toString('hex'));
+        //     handleInfo("WASM", wasmId.toString('hex'));
+        //     handleInfo("Creation Block No.", wasmIdLedger);
+
+        //     const { wasmCode }: any = await sdk.contract.getContractCode(wasmId);
+        //     if (wasmCode) {
+        //         const wasmBytes = hexToByte(wasmCode)
+        //         const wasmFile = new Blob([new Uint8Array(wasmBytes)])
+        //         setWasmFile(wasmFile);
+        //     };
+        // }
+
+        try {
             const { wasmId, wasmIdLedger }: any = await sdk.contract.getContractData(contractAddress);
-            if (!wasmId) {
-                title = "Contract not found"
-                description = "Contract not found"
-                toast({ title, description });
-                return;
-            };
-
-            setWasmId(wasmId.toString('hex'));
-            handleInfo("WASM", wasmId.toString('hex'));
-            handleInfo("Creation Block No.", wasmIdLedger);
-
-            const { wasmCode }: any = await sdk.contract.getContractCode(wasmId);
-            if (wasmCode) {
+            if (wasmId) {
+                setWasmId(wasmId.toString('hex'));
+                handleInfo("WASM", wasmId.toString('hex'));
+                handleInfo("Creation Block No.", wasmIdLedger);
+    
+                const { wasmCode }: any = await sdk.contract.getContractCode(wasmId);
+                if (wasmCode) {
                 const wasmBytes = hexToByte(wasmCode)
                 const wasmFile = new Blob([new Uint8Array(wasmBytes)])
                 setWasmFile(wasmFile);
-            };
+                };
+                // title = "Contract not found"
+                // description = "Contract not found"
+                // toast({ title, description });
+                // return;
+            } else {
+                handleTokenInfo("Asset", "Contract is Wrapped", false);
+            }
+        } catch (error: any) { 
+            console.log(error);
         }
-
         const abi = await sdk.contract.getContractABI(contractAddress);
         if (!abi) return;
 

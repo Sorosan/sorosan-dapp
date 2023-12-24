@@ -4,7 +4,7 @@ import { getContract, hexToByte } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { useSorosanSDK } from "@sorosan-client/react";
+import { useSorosanSDK } from "@sorosan-sdk/react";
 // Need to import hexToByte
 import { useToast } from "@/components/ui/use-toast";
 import { DeploymentInfoItem, DeploymentInformation } from "@/components/main/deploy/deployment-information";
@@ -146,70 +146,6 @@ export default function InvokePage() {
                     key={key}
                     contractAddress={contractAddress}
                     abi={abi} />}
-
-            {/* <Accordion type="single" collapsible>
-                {abi && abi.map((method, index) => {
-                    return (
-                        <AccordionItem key={index} value={`item-${index}`}>
-                            <AccordionTrigger>{method.name}()</AccordionTrigger>
-                            <AccordionContent>
-                                {method.params.map((param: any, paramIndex: number) => {
-                                    return (
-                                        <div key={paramIndex} className="">
-                                            <h2>{param.name}</h2>
-
-                                            <div className="grid grid-cols-12 gap-4 my-2">
-                                                <div className="col-span-12 lg:col-span-10">
-                                                    <Input type={getInputType(param.type)}
-                                                        className="" placeholder={param.type}
-                                                        onChange={(e) => handleChangeMethodData(method.name,
-                                                            param.name,
-                                                            param.type,
-                                                            e.target.value)}
-                                                    />
-                                                </div>
-                                                <div className="col-span-12 lg:col-span-2">
-                                                    <Select
-                                                        defaultValue={param.type}
-                                                        onValueChange={(e) => {
-                                                            changeContractType(method.name,
-                                                                param.name,
-                                                                e)
-                                                        }}
-                                                    >
-                                                        <SelectTrigger className="">
-                                                            <SelectValue placeholder="Type" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectGroup>
-                                                                <SelectLabel>Type (Change if you need too!)</SelectLabel>
-                                                                <ScrollArea className="h-[200px] rounded-md">
-                                                                    {scValTypes.map((scValType, index) => {
-                                                                        return <SelectItem key={index} value={scValType}>{scValType}</SelectItem>
-                                                                    })}
-                                                                </ScrollArea>
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
-                                <Button disabled={isCallingMethod}
-                                    onClick={() => handleCallMethod(method.name)}
-                                >
-                                    Call
-                                </Button>
-
-                                <div>
-                                    {(callData[method.name] && handleCallData(callData[method.name])) || ""}
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                    )
-                })}
-            </Accordion> */}
         </div>
     )
 }

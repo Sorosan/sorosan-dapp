@@ -1,6 +1,6 @@
 "use client";
 
-import { useSorosanSDK } from "@sorosan-client/react";
+import { useSorosanSDK } from "@sorosan-sdk/react";
 import { Input } from "@/components/ui/input";
 import { ArrowLeftRight } from "lucide-react";
 import { useState } from "react";

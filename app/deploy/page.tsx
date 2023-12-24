@@ -41,7 +41,7 @@ const items: ActionCardItem[] = [
     },
     {
         icon: "ion:dice-outline",
-        title: "Dice (COMING SOON)",
+        title: "Dice",
         href: "/deploy/dice",
         description: "On chain dice, using Soroban PRNG"
     },

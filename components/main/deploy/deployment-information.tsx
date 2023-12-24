@@ -1,4 +1,4 @@
-import { useSorosanSDK } from "@sorosan-client/react";
+import { useSorosanSDK } from "@sorosan-sdk/react";
 import { ClipBoard } from "../shared/clip-board";
 import { Http2ServerRequest } from "http2";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -60,7 +60,7 @@ const DeploymentInfo = ({ info }: DeploymentInfoProps) => {
                 {info.title}
             </h5>
             <div className="flex items-center gap-x-2 bg-slate-50 dark:bg-zinc-900 px-2.5 py-1 rounded-md">
-                {info.masked ? sdk.util.mask(info.value) : info.value}
+                {info.masked ? sdk.util.mask(info.value.toString()) : info.value}
                 <ClipBoard command={info.value} />
             </div>
         </div>

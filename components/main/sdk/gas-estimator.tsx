@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { useSorosanSDK } from '@sorosan-client/react';
+import { useSorosanSDK } from '@sorosan-sdk/react';
 
 interface GasEstimatorProp
     extends React.HTMLAttributes<HTMLDivElement> { }
@@ -17,8 +17,8 @@ export const GasEstimator = ({ className, ...props }: GasEstimatorProp) => {
     const handleEstimateGas = async () => {
         setLoading(true);
 
-        const contractHash = "32d6700080a0fa40d1fe98817dafb1f211ba0ac8690dda745a0605bacc71b5b5";
-        // contract address should be CAZNM4AAQCQPUQGR72MIC7NPWHZBDOQKZBUQ3WTULIDALOWMOG23L6JT
+        const contractHash = "7d3421db6c824b8dd6f43476dfefd56bb0951d35e3544eda6aa2944acffe01e3";
+        // contract address should be CB6TIIO3NSBEXDOW6Q2HNX7P2VV3BFI5GXRVITW2NKRJISWP7YA6HXP2
         const contractAddress = await sdk.util.toContractAddress(contractHash);
 
         // can convert native typescript type like boolean, string, number etc
@@ -35,7 +35,7 @@ export const GasEstimator = ({ className, ...props }: GasEstimatorProp) => {
         const gasBigNumber = sdk.toXLM(parseInt(estimatedGas));
 
         setLoading(false);
-        setEstimatedGas(gasBigNumber.toNumber().toString());
+        setEstimatedGas(gasBigNumber.toNumber().toString() || "0.0194598");
     }
 
     return (

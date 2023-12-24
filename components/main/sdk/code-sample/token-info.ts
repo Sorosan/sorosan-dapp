@@ -1,6 +1,6 @@
 export const code = `
 // Component.tsx
-import { useSorosanSDK } from '@sorosan-client/react';
+import { useSorosanSDK } from '@sorosan-sdk/react';
 
 export const Component = () => {
     const { sdk } = useSorosanSDK();

@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Asset } from "soroban-client";
-import { useSorosanSDK } from "@sorosan-client/react";
+import { Asset } from "stellar-sdk";
+import { useSorosanSDK } from "@sorosan-sdk/react";
 import { PageHeaderItem, PageHeader } from "@/components/main/shared/page-header";
 import { Input } from "@/components/ui/input";
 
@@ -18,8 +18,8 @@ export default function ContractToAddress() {
     const [asset, setAsset] = useState<Asset | null>(null);
 
     const getAssetInfo = async () => {
-        const asset = await sdk.token.getAsset(contractAddress);
-        asset && setAsset(asset);
+        // const asset = await sdk.token.getAsset(contractAddress);
+        // asset && setAsset(asset);
     }
 
     return (

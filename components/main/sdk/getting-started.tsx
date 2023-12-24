@@ -80,6 +80,6 @@ const packages: NPMPackage[] = [
     {
         title: 'React',
         icon: 'logos:react',
-        command: "npm install @sorosan-client/react",
+        command: "npm install @sorosan-sdk/react",
     },
 ]

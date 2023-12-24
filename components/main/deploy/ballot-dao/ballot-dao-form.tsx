@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FormSubInfo } from "@/components/main/deploy/shared/form-subinfo"
 import { WASMCheckBox } from "@/components/main/deploy/shared/wasm-checkbox"
 import { Input } from "@/components/ui/input";
-import { useSorosanSDK } from "@sorosan-client/react";
+import { useSorosanSDK } from "@sorosan-sdk/react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 

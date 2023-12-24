@@ -2,25 +2,19 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useSorosanSDK } from "@sorosan-sdk/react";
 import { useToast } from "@/components/ui/use-toast";
-import { BALLOT_WASM_ID } from "@/lib/constants";
+import { DEPLOYER_WASM_ID } from "@/lib/constants";
 import { DeploymentInfoItem } from "@/components/main/deploy/deployment-information";
 
-export interface BallotDaoDeployerProps
+export interface DiceDeployerProps
     extends React.HTMLAttributes<HTMLDivElement> {
     setInfo: React.Dispatch<React.SetStateAction<DeploymentInfoItem[]>>;
     deployWasm: boolean;
-    admin: string;
-    startTime: number;
-    endTime: number;
 }
 
-export const BallotDaoDeployer = ({
+export const DiceDeployer = ({
     setInfo,
     deployWasm,
-    admin,
-    startTime,
-    endTime,
-}: BallotDaoDeployerProps) => {
+}: DiceDeployerProps) => {
     const { toast } = useToast();
     const { sdk } = useSorosanSDK();
 
@@ -39,19 +33,19 @@ export const BallotDaoDeployer = ({
 
     const deploy = async () => {
         let title = "Not Logged In";
-        let description = "Please connect wallet to deploy ballot";
+        let description = "Please connect wallet to deploy deployer";
         if (!await sdk.login()) {
             toast({ title, description });
             return;
         }
 
-        let wasmId = BALLOT_WASM_ID(sdk.selectedNetwork.network);
+        let wasmId = DEPLOYER_WASM_ID(sdk.selectedNetwork.network);
         if (deployWasm) {
             title = "Deploying Wasm";
             description = "Deploying wasm to the network";
             toast({ title, description });
 
-            const response = await fetch(`/api/wasm/ballot-dao`, {
+            const response = await fetch(`/api/wasm/dice`, {
                 method: 'POST',
             });
             const wasm = await response.blob();
@@ -74,8 +68,8 @@ export const BallotDaoDeployer = ({
         }
 
         handleInfo("WASM", wasmId);
-        title = "Deploying Ballot";
-        description = "Deploying Ballot to the network";
+        title = "Deploying Dice";
+        description = "Deploying Dice to the network";
         toast({ title, description });
 
         const contractId = await sdk.contract.deploy(wasmId, sdk.publicKey);
@@ -88,27 +82,8 @@ export const BallotDaoDeployer = ({
             return;
         }
 
-        console.log(admin, startTime, endTime);
-        if (admin && startTime && endTime) {
-            const args = [
-                sdk.nativeToScVal(admin, "address"),
-                sdk.nativeToScVal(startTime, "u64"),
-                sdk.nativeToScVal(endTime, "u64"),
-            ];
-
-            const ret = await sdk.contract.initialise(contractAddress,
-                "configure", args);
-
-            if (!ret) {
-                title = "Deployed but Initialise Failed";
-                description = "Please try again";
-                toast({ title, description });
-                return;
-            }
-        }
-
         title = "Deployed";
-        description = "Your Ballot contract has been deployed";
+        description = "Your Dice contract has been deployed";
         handleInfo("Contract", contractAddress);
         toast({ title, description });
     }

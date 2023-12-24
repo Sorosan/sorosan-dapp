@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useSorosanSDK } from "@sorosan-client/react";
+import { useSorosanSDK } from "@sorosan-sdk/react";
 import { useToast } from "@/components/ui/use-toast";
 import { NFT_WASM_ID } from "@/lib/constants";
 import { DeploymentInfoItem } from "./deployment-information";
@@ -28,8 +28,9 @@ export const NFTDeployer = ({
         setLoading(true);
         try {
             await deploy();
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
+            toast({ title: "Error", description: error.toString() });
         }
         setLoading(false);
     }
@@ -42,7 +43,7 @@ export const NFTDeployer = ({
             return;
         }
 
-        let wasmId = NFT_WASM_ID;
+        let wasmId = NFT_WASM_ID(sdk.selectedNetwork.network);
         if (deployWasm) {
             title = "Deploying Wasm";
             description = "Deploying wasm to the network";
