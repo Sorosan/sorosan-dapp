@@ -52,7 +52,7 @@ export default function InvokePage() {
         setContractAddress(contractAddress);
 
         // { wasmId, wasmIdLedger }
-        const contractData: any = await sdk.contract.getContractData(contractAddress);
+        const contractData: any = await sdk.contract.contractInfo(contractAddress);
         if (!contractData || !contractData.wasmId) {
             toast({
                 title: "Contract not found",
@@ -61,7 +61,7 @@ export default function InvokePage() {
             return;
         };
 
-        const { wasmId, wasmIdLedger } = contractData;
+        const { wasmId, ledgerSeq: wasmIdLedger } = contractData;
         setWasmId(wasmId.toString('hex'));
         handleInfo("WASM", wasmId.toString('hex'));
         handleInfo("Creation Block No.", wasmIdLedger);
@@ -84,7 +84,7 @@ export default function InvokePage() {
             console.error(e);
         }
 
-        const { wasmCode }: any = await sdk.contract.getContractCode(wasmId);
+        const { code: wasmCode }: any = await sdk.contract.contractCodeByWasm(wasmId);
         if (wasmCode) {
             const wasmBytes = hexToByte(wasmCode)
             const wasmFile = new Blob([new Uint8Array(wasmBytes)])

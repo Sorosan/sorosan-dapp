@@ -114,13 +114,13 @@ export default function TokenExplorerPage() {
         // }
 
         try {
-            const { wasmId, wasmIdLedger }: any = await sdk.contract.getContractData(contractAddress);
+            const { wasmId, ledgerSeq: wasmIdLedger }: any = await sdk.contract.contractInfo(contractAddress);
             if (wasmId) {
                 setWasmId(wasmId.toString('hex'));
                 handleInfo("WASM", wasmId.toString('hex'));
                 handleInfo("Creation Block No.", wasmIdLedger);
     
-                const { wasmCode }: any = await sdk.contract.getContractCode(wasmId);
+                const { code: wasmCode }: any = await sdk.contract.contractCodeByWasm(wasmId);
                 if (wasmCode) {
                 const wasmBytes = hexToByte(wasmCode)
                 const wasmFile = new Blob([new Uint8Array(wasmBytes)])

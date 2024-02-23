@@ -53,7 +53,8 @@ export const DeployerDeployer = ({
                 return;
             }
             try {
-                wasmId = await sdk.contract.deployWasm(wasm, sdk.publicKey);
+                const { payload } = await sdk.contract.deployWasm(wasm, sdk.publicKey)
+                wasmId = payload;
             } catch (error) {
                 console.log(error);
                 wasmId = ""
@@ -72,7 +73,7 @@ export const DeployerDeployer = ({
         description = "Deploying Deployer to the network";
         toast({ title, description });
 
-        const contractId = await sdk.contract.deploy(wasmId, sdk.publicKey);
+        const { payload: contractId } = await sdk.contract.deploy(wasmId, sdk.publicKey);    
         const contractAddress = await sdk.util.toContractAddress(contractId);
 
         if (!contractAddress) {

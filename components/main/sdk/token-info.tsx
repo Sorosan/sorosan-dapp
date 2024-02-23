@@ -10,7 +10,7 @@ interface TokenInfoProp
 export const TokenInfo = ({ className, ...props }: TokenInfoProp) => {
     const { sdk } = useSorosanSDK();
 
-    const [contract, setContract] = useState("CB6TIIO3NSBEXDOW6Q2HNX7P2VV3BFI5GXRVITW2NKRJISWP7YA6HXP2");
+    const [contract, setContract] = useState("CAQ2XST7CNLSV6Q2MBYXFPN5E2NJZOICLZ5BCB66CR2UQGO5TF5FOWAF");
     const [tokenName, setTokenName] = useState("");
     const [tokenSymbol, setTokenSymbol] = useState("");
     const [loading, setLoading] = useState(false);

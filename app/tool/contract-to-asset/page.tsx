@@ -9,17 +9,18 @@ import { Input } from "@/components/ui/input";
 
 const item: PageHeaderItem = {
     name: "Smart Contract Token to Stellar Asset",
-    description: "Given a Token smart contract, get the Stellar Asset (if wrapped)",
+    description: "Given a Token smart contract, get the Stellar Asset (if wrapped) (Not this is only available for Soroban Testnet)",
 }
+
 export default function ContractToAddress() {
     const { sdk } = useSorosanSDK();
-    
+
     const [contractAddress, setSontractAddress] = useState<string>("");
     const [asset, setAsset] = useState<Asset | null>(null);
 
     const getAssetInfo = async () => {
-        // const asset = await sdk.token.getAsset(contractAddress);
-        // asset && setAsset(asset);
+        const asset = await sdk.token.getAssetFromContract(contractAddress);
+        asset && setAsset(asset);
     }
 
     return (

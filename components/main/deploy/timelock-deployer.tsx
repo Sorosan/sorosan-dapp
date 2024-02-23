@@ -70,8 +70,8 @@ export const TimelockDeployer = ({
                 return;
             }
             try {
-                wasmId = await sdk.contract.deployWasm(wasm, sdk.publicKey);
-                console.log(wasmId);
+                const { payload } = await sdk.contract.deployWasm(wasm, sdk.publicKey);
+                wasmId = payload;
             } catch (error) {
                 console.log(error);
                 wasmId = ""
@@ -90,7 +90,7 @@ export const TimelockDeployer = ({
         description = "Deploying TimeLock to the network";
         toast({ title, description });
 
-        const contractId = await sdk.contract.deploy(wasmId, sdk.publicKey);
+        const { payload: contractId } = await sdk.contract.deploy(wasmId, sdk.publicKey);
         const contractAddress = await sdk.util.toContractAddress(contractId);
         console.log(contractAddress);
 

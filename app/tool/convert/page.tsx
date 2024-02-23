@@ -39,10 +39,10 @@ export default function ConvertPage() {
     const handleConverstion = (e: any) => {
         let value;
         if (xlmToStroop) {
-            value = sdk.toStroop(e.target.value);
+            value = sdk.util.toStroop(e.target.value);
         }
         else {
-            value = sdk.toXLM(e.target.value);
+            value = sdk.util.toXLM(e.target.value);
         }
 
         setQuestion(e.target.value);

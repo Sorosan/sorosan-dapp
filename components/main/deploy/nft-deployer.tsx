@@ -57,7 +57,8 @@ export const NFTDeployer = ({
                 return;
             }
             try {
-                wasmId = await sdk.contract.deployWasm(wasm, sdk.publicKey);
+                const { payload } = await sdk.contract.deployWasm(wasm, sdk.publicKey);
+                wasmId = payload;
             } catch (error) {
                 console.log(error);
                 wasmId = ""
@@ -76,7 +77,7 @@ export const NFTDeployer = ({
         description = "Deploying token to the network";
         toast({ title, description });
 
-        const contractId = await sdk.contract.deploy(wasmId, sdk.publicKey);
+        const { payload: contractId } = await sdk.contract.deploy(wasmId, sdk.publicKey);
         const contractAddress = await sdk.util.toContractAddress(contractId);
 
         if (name && symbol) {

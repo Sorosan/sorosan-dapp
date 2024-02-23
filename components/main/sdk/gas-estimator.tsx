@@ -17,8 +17,8 @@ export const GasEstimator = ({ className, ...props }: GasEstimatorProp) => {
     const handleEstimateGas = async () => {
         setLoading(true);
 
-        const contractHash = "7d3421db6c824b8dd6f43476dfefd56bb0951d35e3544eda6aa2944acffe01e3";
-        // contract address should be CB6TIIO3NSBEXDOW6Q2HNX7P2VV3BFI5GXRVITW2NKRJISWP7YA6HXP2
+        const contractHash = "21abca7f13572afa1a607172bdbd269a9cb9025e7a1107de14754819dd997a57";
+        // contract address should be CAQ2XST7CNLSV6Q2MBYXFPN5E2NJZOICLZ5BCB66CR2UQGO5TF5FOWAF
         const contractAddress = await sdk.util.toContractAddress(contractHash);
 
         // can convert native typescript type like boolean, string, number etc
@@ -32,7 +32,7 @@ export const GasEstimator = ({ className, ...props }: GasEstimatorProp) => {
             args
         )
 
-        const gasBigNumber = sdk.toXLM(parseInt(estimatedGas));
+        const gasBigNumber = sdk.util.toXLM(parseInt(estimatedGas));
 
         setLoading(false);
         setEstimatedGas(gasBigNumber.toNumber().toString() || "0.0194598");

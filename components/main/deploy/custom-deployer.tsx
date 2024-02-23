@@ -82,8 +82,7 @@ export const CustomDeployer = ({
         title = "Deploying Wasm";
         description = "Deploying wasm to the network";
         toast({ title, description });
-        console.log(wasm, sdk.publicKey);
-        const wasmId = await sdk.contract.deployWasm(wasm, sdk.publicKey);
+        const { payload: wasmId } = await sdk.contract.deployWasm(wasm, sdk.publicKey);
 
         if (!wasmId) {
             title = "Wasm Deploy Failed";
@@ -98,7 +97,7 @@ export const CustomDeployer = ({
         description = "Deploying contract to the network";
         toast({ title, description });
 
-        const contractId = await sdk.contract.deploy(wasmId, sdk.publicKey);
+        const { payload: contractId } = await sdk.contract.deploy(wasmId, sdk.publicKey);
         if (!contractId) {
             title = "Contract Deploy Failed";
             description = "Please try again";
